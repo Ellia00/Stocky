@@ -19,3 +19,6 @@
 - profit calc doesnt seem right
 - profit doenst have decimals
 - price never goes under 4 or over 6
+
+- unsure if price still updates on buying/selling(it should only be on cycle)
+- reverse on profit, should update on both buying and price change(ie the time cycle)
