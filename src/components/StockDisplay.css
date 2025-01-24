@@ -26,3 +26,40 @@
     background-color: #363636;
     opacity: 0.7;
 }
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.buy-button, .sell-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.buy-button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.sell-button {
+    background-color: #f44336;
+    color: white;
+}
+
+.buy-button:hover {
+    background-color: #45a049;
+}
+
+.sell-button:hover {
+    background-color: #da190b;
+}
+
+.buy-button:disabled, .sell-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
