@@ -1,10 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import "./App.css";
 import CounterButton from './components/CounterButton';
 import StockDisplay from './components/StockDisplay';
 
 function App() {
-  const [money, setMoney] = useState(0);
+
+  const storedMoney = localStorage.getItem('money');
+  const initialMoney = storedMoney ? parseInt(storedMoney) : 0;
+  
+  const [money, setMoney] = useState(initialMoney);
+
+  useEffect(() => {
+      localStorage.setItem('money', money);
+  }, [money]);
 
   const increaseMoney = () => {
       setMoney(money + 1);
