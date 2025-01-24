@@ -3,18 +3,19 @@
 - save money in local storage (Done but add hashing to minimize cheating)
 
 ## Stocks
-- be able to sell stocks
 - be Able to see stocks
 - be able to se profit and loss
-- avarage cost for the stock you own
-- be able for the max money you have
 
 ### Stock price
-
-    - make stock price move up and down randomly
-    - add roof and groud level for price?
+    - make it rarely shoot or dip more drastically
     - make graph?
 
 ## passive money making?
 
 - make money passively by hiring traders maybe
+
+## Bugs
+- double dollar sign on profit calc?
+- profit calc doesnt seem right
+- profit doenst have decimals
+- price never goes under 4 or over 6
