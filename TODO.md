@@ -15,7 +15,6 @@
 - make money passively by hiring traders maybe
 
 ## Bugs
-- double dollar sign on profit calc?
 - profit calc doesnt seem right
 - profit doenst have decimals
 - price never goes under 4 or over 6
