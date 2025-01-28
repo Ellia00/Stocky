@@ -117,13 +117,22 @@ const StockDisplay = ({ money, onPurchase }) => {
         if (stock.id === stockId) {
           const oldPrice = stock.price;
           const fluctuationRange = stock.id === 1 ? 0.4 : 0.2;
-          const fluctuation = Math.random() * fluctuationRange - fluctuationRange / 2;
+          const fluctuation =
+            Math.random() * fluctuationRange - fluctuationRange / 2;
           const newPrice = Math.round(stock.basePrice * (1 + fluctuation));
-          const finalPrice = Math.min(Math.max(newPrice, stock.minPrice), stock.maxPrice);
+          const finalPrice = Math.min(
+            Math.max(newPrice, stock.minPrice),
+            stock.maxPrice
+          );
 
           setPriceChanges((prev) => ({
             ...prev,
-            [stock.id]: finalPrice > oldPrice ? "green" : finalPrice < oldPrice ? "red" : "",
+            [stock.id]:
+              finalPrice > oldPrice
+                ? "green"
+                : finalPrice < oldPrice
+                ? "red"
+                : "",
           }));
 
           return {
@@ -137,43 +146,61 @@ const StockDisplay = ({ money, onPurchase }) => {
   };
 
   const buyStock = (stockId) => {
-    const stock = unlockedStocks.find(s => s.id === stockId);
-    if (stock && stock.isUnlocked && money >= stock.price && stock.owned < stock.maxOwned) {
+    const stock = unlockedStocks.find((s) => s.id === stockId);
+    if (
+      stock &&
+      stock.isUnlocked &&
+      money >= stock.price &&
+      stock.owned < stock.maxOwned
+    ) {
       onPurchase(stock.price);
-      setUnlockedStocks(unlockedStocks.map(s => {
-        if (s.id === stockId) {
-          const newTotalSpent = s.totalSpent + stock.price;
-          return { 
-            ...s, 
-            owned: s.owned + 1,
-            totalSpent: newTotalSpent
-          };
-        }
-        return s;
-      }));
+      setUnlockedStocks(
+        unlockedStocks.map((s) => {
+          if (s.id === stockId) {
+            const newTotalSpent = s.totalSpent + stock.price;
+            return {
+              ...s,
+              owned: s.owned + 1,
+              totalSpent: newTotalSpent,
+            };
+          }
+          return s;
+        })
+      );
     }
   };
 
+  const getMaxBuyInfo = (stock) => {
+    if (!stock.isUnlocked) return null;
+    const maxAffordable = Math.floor(money / stock.price);
+    const spaceLeft = stock.maxOwned - stock.owned;
+    const buyAmount = Math.min(maxAffordable, spaceLeft);
+    const totalCost = (stock.price * buyAmount).toFixed(2);
+
+    return ` $${totalCost}`;
+  };
   const buyMaxStock = (stockId) => {
-    const stock = unlockedStocks.find(s => s.id === stockId);
+    const stock = unlockedStocks.find((s) => s.id === stockId);
     if (stock && stock.isUnlocked) {
       const maxAffordable = Math.floor(money / stock.price);
       const spaceLeft = stock.maxOwned - stock.owned;
       const buyAmount = Math.min(maxAffordable, spaceLeft);
-    
+
       if (buyAmount > 0) {
         const totalCost = stock.price * buyAmount;
         onPurchase(totalCost);
-        setUnlockedStocks(unlockedStocks.map(s => {
-          if (s.id === stockId) {
-            return { 
-              ...s, 
-              owned: s.owned + buyAmount,
-              totalSpent: s.totalSpent + totalCost 
-            };
-          }
-          return s;
-        }));
+        setUnlockedStocks(
+          unlockedStocks.map((s) => {
+            if (s.id === stockId) {
+              return {
+                ...s,
+                owned: s.owned + buyAmount,
+                totalSpent: s.totalSpent + totalCost,
+              };
+            }
+            return s;
+          })
+        );
       }
     }
   };
@@ -219,16 +246,23 @@ const StockDisplay = ({ money, onPurchase }) => {
 
   const getAveragePrice = (stock) => {
     if (stock.owned === 0) return 0;
-    const averagePrice = (stock.totalSpent / stock.owned).toFixed(2);
-    const potentialProfit = ((stock.price * stock.owned) - stock.totalSpent).toFixed(2);
-    const profitDisplay = potentialProfit >= 0 ? `+${potentialProfit}` : `-${Math.abs(potentialProfit)}`;
-    const profitColor = potentialProfit >= 0 ? 'green' : 'red';
-    return (
-      <>
-        ${averagePrice} <span style={{color: profitColor}}>{profitDisplay}</span>
-      </>
-    );
+    return (stock.totalSpent / stock.owned).toFixed(2);
   };
+
+  const getPotentialProfit = (stock) => {
+    if (stock.owned === 0) return null;
+    const potentialProfit = (
+      stock.price * stock.owned -
+      stock.totalSpent
+    ).toFixed(2);
+    const profitDisplay =
+      potentialProfit >= 0
+        ? `+$${potentialProfit}`
+        : `-$${Math.abs(potentialProfit)}`;
+    const profitColor = potentialProfit >= 0 ? "green" : "red";
+    return <span style={{ color: profitColor }}>{profitDisplay}</span>;
+  };
+
   return (
     <div className="stock-display">
       <h2>Available Stocks</h2>
@@ -262,7 +296,7 @@ const StockDisplay = ({ money, onPurchase }) => {
                     money < stock.price || stock.owned >= stock.maxOwned
                   }
                 >
-                  Buy Max
+                  Buy Max{getMaxBuyInfo(stock)}
                 </button>
                 <button
                   onClick={() => buyStock(stock.id)}
@@ -287,6 +321,7 @@ const StockDisplay = ({ money, onPurchase }) => {
                 >
                   Sell All
                 </button>
+                {stock.owned > 0 && getPotentialProfit(stock)}
               </div>
             )}
           </div>
