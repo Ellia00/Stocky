@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import "./StockDisplay.css";
+import StockGraph from "./StockGraph";
+
+
 
 const StockDisplay = ({ money, onPurchase }) => {
-  const [countdown, setCountdown] = useState(15);
+  const [countdown, setCountdown] = useState(10);
   const [unlockedStocks, setUnlockedStocks] = useState(() => {
     const savedStocks = localStorage.getItem("stocks");
     if (savedStocks) {
@@ -14,6 +17,7 @@ const StockDisplay = ({ money, onPurchase }) => {
         name: "Basic Stock",
         isUnlocked: true,
         price: 5,
+        priceHistory: [5],
         basePrice: 5,
         owned: 0,
         minPrice: 2,
@@ -66,39 +70,51 @@ const StockDisplay = ({ money, onPurchase }) => {
       setUnlockedStocks((stocks) =>
         stocks.map((stock) => {
           const oldPrice = stock.price;
-          const fluctuationRange = stock.id === 1 ? 0.4 : 0.2;
-          const fluctuation =
-            Math.random() * fluctuationRange - fluctuationRange / 2;
-          const newPrice = Math.round(stock.basePrice * (1 + fluctuation));
-          const finalPrice = Math.min(
-            Math.max(newPrice, stock.minPrice),
-            stock.maxPrice
-          );
+          const priceRange = stock.maxPrice - stock.minPrice;
+          const volatility = Math.random();
+
+          let change = volatility > 0.7
+            ? (Math.random() - 0.5) * (priceRange * 0.8)
+            : (Math.random() - 0.5) * (priceRange * 0.15);
+
+          if (Math.random() < 0.05) {
+            change *= 5; // Extrem förändring
+          }
+
+          // console.log(stock.id, change);
+          // Runda av till närmaste heltal
+          change = Math.round(change);
+          
+          console.log(stock.id, change);
+          // Om förändringen blir 0, låt det vara kvar 50% av gångerna
+          if (change === 0 && Math.random() < 0.5) {
+            change = Math.random() > 0.5 ? 1 : -1;
+          }
+
+
+          const newPrice = Math.round(stock.price + change);
+          const finalPrice = Math.min(Math.max(newPrice, stock.minPrice), stock.maxPrice);
 
           setPriceChanges((prev) => ({
             ...prev,
-            [stock.id]:
-              finalPrice > oldPrice
-                ? "green"
-                : finalPrice < oldPrice
-                ? "red"
-                : "",
+            [stock.id]: finalPrice > oldPrice ? "green" : finalPrice < oldPrice ? "red" : "",
           }));
 
           return {
             ...stock,
             price: finalPrice,
+            priceHistory: [...(stock.priceHistory || []), finalPrice].slice(-20) //keep last 10 prices
           };
         })
       );
-      setCountdown(15);
+      setCountdown(10);
     };
 
     const countdownInterval = setInterval(() => {
       setCountdown((prev) => prev - 1);
     }, 1000);
 
-    const priceInterval = setInterval(updatePrices, 15000);
+    const priceInterval = setInterval(updatePrices, 10000);
     updatePrices(); // Initial price update
 
     return () => {
@@ -111,39 +127,6 @@ const StockDisplay = ({ money, onPurchase }) => {
     localStorage.setItem("stocks", JSON.stringify(unlockedStocks));
   }, [unlockedStocks]);
 
-  const updateStockPrice = (stockId) => {
-    setUnlockedStocks((stocks) =>
-      stocks.map((stock) => {
-        if (stock.id === stockId) {
-          const oldPrice = stock.price;
-          const fluctuationRange = stock.id === 1 ? 0.4 : 0.2;
-          const fluctuation =
-            Math.random() * fluctuationRange - fluctuationRange / 2;
-          const newPrice = Math.round(stock.basePrice * (1 + fluctuation));
-          const finalPrice = Math.min(
-            Math.max(newPrice, stock.minPrice),
-            stock.maxPrice
-          );
-
-          setPriceChanges((prev) => ({
-            ...prev,
-            [stock.id]:
-              finalPrice > oldPrice
-                ? "green"
-                : finalPrice < oldPrice
-                ? "red"
-                : "",
-          }));
-
-          return {
-            ...stock,
-            price: finalPrice,
-          };
-        }
-        return stock;
-      })
-    );
-  };
 
   const buyStock = (stockId) => {
     const stock = unlockedStocks.find((s) => s.id === stockId);
@@ -274,6 +257,8 @@ const StockDisplay = ({ money, onPurchase }) => {
             className={`stock-item ${stock.isUnlocked ? "unlocked" : "locked"}`}
           >
             <h3>{stock.name}</h3>
+            <StockGraph priceHistory={stock.priceHistory} minPrice={stock.minPrice} maxPrice={stock.maxPrice} />
+
             <p>{stock.isUnlocked ? "" : "Locked"}</p>
             <p
               style={{
