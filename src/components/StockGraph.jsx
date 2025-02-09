@@ -20,7 +20,7 @@ ChartJS.register(
   Legend
 );
 
-const StockGraph = ({ priceHistory = [], minPrice, maxPrice }) => {
+const StockGraph = ({ priceHistory = [], minPrice, maxPrice, averagePrice }) => {
   const data = {
     labels: priceHistory.map((_, index) => index),
     datasets: [{
@@ -31,22 +31,29 @@ const StockGraph = ({ priceHistory = [], minPrice, maxPrice }) => {
       tension: 0.3,                          // Make line smoother
       pointRadius: 0,                        // Adjust point size
       borderWidth: 2                         // Adjust line thickness
-    }]
+    }, {
+      label: "Avg Buy Price",
+      data: Array(priceHistory.length).fill(averagePrice),
+      borderColor: 'rgba(0, 255, 0, 0.5)',
+      borderWidth: 2,
+      borderDash: [5, 5],
+      pointRadius: 0,
+      fill: false
+    }
+    ]
   };
 
   const options = {
     scales: {
       y: {
-        min: minPrice - 1,
-        max: maxPrice + 1,
+        min: minPrice,
+        max: maxPrice,
         grid: {
           color: 'rgba(200, 200, 200, 0.2)'  // Lighter grid lines
         }
       },
       x: {
-        grid: {
-          display: false                      // Hide vertical grid
-        }
+        display: false,                        // Hide x-axis labels
       }
     },
     plugins: {

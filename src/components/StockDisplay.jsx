@@ -84,7 +84,7 @@ const StockDisplay = ({ money, onPurchase }) => {
           // console.log(stock.id, change);
           // Runda av till närmaste heltal
           change = Math.round(change);
-          
+
           console.log(stock.id, change);
           // Om förändringen blir 0, låt det vara kvar 50% av gångerna
           if (change === 0 && Math.random() < 0.5) {
@@ -257,7 +257,7 @@ const StockDisplay = ({ money, onPurchase }) => {
             className={`stock-item ${stock.isUnlocked ? "unlocked" : "locked"}`}
           >
             <h3>{stock.name}</h3>
-            <StockGraph priceHistory={stock.priceHistory} minPrice={stock.minPrice} maxPrice={stock.maxPrice} />
+            <StockGraph priceHistory={stock.priceHistory} minPrice={stock.minPrice} maxPrice={stock.maxPrice} averagePrice={getAveragePrice(stock)} />
 
             <p>{stock.isUnlocked ? "" : "Locked"}</p>
             <p
