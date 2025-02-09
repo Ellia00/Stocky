@@ -14,6 +14,10 @@
 
 - make money passively by hiring traders maybe
 
+## Upgrade system
+- unlock new stocks
+- lower max volume of first stock to 10? And make it upgradeable
+
 ## Bugs
 - profit calc doesnt seem right
 - profit doenst have decimals
@@ -21,3 +25,12 @@
 
 - unsure if price still updates on buying/selling(it should only be on cycle)
 - reverse on profit, should update on both buying and price change(ie the time cycle)
+
+
+## IDEAS
+
+- redesign to shadecn style
+- or rebrand to spaceinvestor
+- graph for your total money(needs to scale somehow)
+- Friend James comes with risky trades sometimes, so you actually loose money sometimes
+- Basic achievements
