@@ -28,9 +28,11 @@
 
 
 ## IDEAS
-
 - redesign to shadecn style
 - or rebrand to spaceinvestor
 - graph for your total money(needs to scale somehow)
 - Friend James comes with risky trades sometimes, so you actually loose money sometimes
 - Basic achievements
+
+- maybe news, and stocks react to news
+- add competitor (like you work  for a company and you need to be the best trader in it)
